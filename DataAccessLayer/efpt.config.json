@@ -1,0 +1,174 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "AppDbContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "DataAccessLayer",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[AnswerLikes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Answers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[BlockedLectures]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Chats]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ChatStatues]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Coupons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Divisions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ExamDetails]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Exams]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Facultys]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Favorites]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Homeworks]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LatestOffers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Lectures]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Lessons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Levels]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Lives]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Materials]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[News]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Notifs]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentDetails]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Payments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PostLikes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Posts]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[QuestionAnswers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Questions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Questions2]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Results]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Rooms]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RoomUsers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Settings]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Units]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
