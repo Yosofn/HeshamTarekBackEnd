@@ -12,6 +12,8 @@ namespace API.DTOs
         public string? Drive { get; set; }
         [Required(ErrorMessage = "Priority is required")]
         public int Priority { get; set; }
+        public int price { get; set; }
+
         public string? LectureDescription { get; set; }
     }
 

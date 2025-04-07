@@ -133,7 +133,7 @@ namespace API.Controllers
                     Name = lectureDTO.Name,
                     Date = DateTime.UtcNow,
                     Url = lectureDTO.Url,
-                    Price = 0,
+                    Price = lectureDTO.price,
                     DependancyId = null,
                     DependancyType = null,
                     LessonId = lessonId,
@@ -192,6 +192,7 @@ namespace API.Controllers
                 existingLecture.Priority = lectureDTO.Priority;
                 existingLecture.LectureDescription = lectureDTO.LectureDescription;
                 existingLecture.Drive=lectureDTO.Drive;
+                existingLecture.Price = lectureDTO.price;
 
                 _context.Lectures.Update(existingLecture);
                 await _context.SaveChangesAsync();

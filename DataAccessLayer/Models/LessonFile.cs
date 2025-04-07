@@ -22,9 +22,6 @@ namespace DataAccessLayer.Models
 
         public string? Description { get; set; }
 
-        [MaxLength(2083)]
-        public string? Url { get; set; }
-
         [ForeignKey("LessonId")]
         public Lesson? Lesson { get; set; }
     }
