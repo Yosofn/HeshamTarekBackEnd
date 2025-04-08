@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.Features;
 
 
 namespace API
@@ -116,20 +117,16 @@ namespace API
 
 
             builder.Services.AddSwaggerGen();
-            // إعداد Controllers مع معالجة الدوران
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
-            // إضافة خدمات أخرى
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<ILockoutService, LockoutService>();
-
-            // إعداد Swagger
+    
             builder.Services.AddEndpointsApiExplorer();
 
-            // إعداد CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAny", policy =>
@@ -139,12 +136,10 @@ namespace API
                           .AllowAnyHeader();
                 });
             });
-
-
+       
 
             var app = builder.Build();
             
-            // ترتيب Middleware
             app.UseStaticFiles();
             app.UseDefaultFiles();
 
@@ -157,12 +152,10 @@ namespace API
 
             app.Use(async (context, next) =>
             {
-                // Check if the request is for Swagger
                 if (context.Request.Path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!IsAuthenticated)
                     {
-                        // Restrict access if not authenticated
                         context.Response.StatusCode = 403; // Forbidden
                         await context.Response.WriteAsync("Access to Swagger is restricted.");
                         return;
@@ -171,11 +164,9 @@ namespace API
 
                 }
 
-                // Continue to the next middleware
                 await next();
             });
 
-            // Always register Swagger so it can be accessed conditionally
 
             app.Use(async (context, next) =>
             {
@@ -183,11 +174,11 @@ namespace API
                 {
                     var timer = new Timer(state =>
                     {
-                        IsAuthenticated = false; // Reset القيمة
+                        IsAuthenticated = false; 
                         Console.WriteLine("IsAuthenticated has been reset to false.");
                     }, null, 5000, Timeout.Infinite);
                 }
-                await next(); // Proceed to the next middleware
+                await next(); 
 
             });
 

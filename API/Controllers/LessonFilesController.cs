@@ -27,8 +27,8 @@ namespace API.Controllers
         }
 
 
-        [Authorize(Policy = "UserType")]
-
+      [Authorize(Policy = "UserType")]
+       
         [HttpPost("AddLessonFile")]
         public async Task<IActionResult> AddLessonFile(IFormFile file, int lessonId, string fileName, string? description, string lessonName)
         {
@@ -72,7 +72,7 @@ namespace API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [Authorize(Policy = "UserType")]
+       [Authorize(Policy = "UserType")]
 
         [HttpPut("UpdateLessonFile/{id}")]
         public async Task<IActionResult> UpdateLessonFile(int id, IFormFile? newFile, string? newFileName, string? newDescription)
@@ -155,7 +155,7 @@ namespace API.Controllers
                     FileId = file.FileId,
                     FileName = file.Title,
                     Description = file.Description,
-                    FileUrl = $"{Request.Scheme}://{Request.Host}/LessonFiles/{lessonName}/{file.Title}"
+                    FileUrl = $"{Request.Scheme}://{Request.Host}/api/LessonFiles/{lessonName}/{file.Title}"
                 });
 
                 return Ok(filesResponse);
@@ -166,38 +166,30 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{fileName}")]
-        public IActionResult GetLessonFile(int lessonId, string fileName)
+        [HttpGet("{lessonName}/{fileName}")]
+        public IActionResult GetLessonFile(string fileName,string lessonName)
         {
-            // Retrieve the lesson name
-            var lessonName = _context.Lessons
-                .Where(lf => lf.Id == lessonId)
-                .Select(lf => lf.Name)
-                .FirstOrDefault();
+            ;
 
             if (string.IsNullOrEmpty(lessonName))
             {
                 return NotFound("Lesson not found.");
             }
 
-            // Construct the file path
             var lessonFolderPath = Path.Combine(_env.WebRootPath, "LessonFiles", lessonName);
             var filePath = Path.Combine(lessonFolderPath, fileName);
 
-            // Check if the file exists
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound("File not found.");
             }
 
-            // Determine the content type
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(filePath, out var contentType))
             {
-                contentType = "application/octet-stream"; // Fallback for unknown file types
+                contentType = "application/octet-stream"; 
             }
 
-            // Open and return the file
             var fileStream = System.IO.File.OpenRead(filePath);
             return File(fileStream, contentType, fileName);
         }
