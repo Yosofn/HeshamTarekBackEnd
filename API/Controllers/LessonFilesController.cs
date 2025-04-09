@@ -30,7 +30,7 @@ namespace API.Controllers
       [Authorize(Policy = "UserType")]
        
         [HttpPost("AddLessonFile")]
-        public async Task<IActionResult> AddLessonFile(IFormFile file, int lessonId, string fileName, string? description, string lessonName)
+        public async Task<IActionResult> AddLessonFile([FromForm]IFormFile file, [FromForm] int lessonId, [FromForm] string fileName, [FromForm] string? description, [FromForm] string lessonName)
         {
             try
             {
@@ -72,10 +72,10 @@ namespace API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-       [Authorize(Policy = "UserType")]
+         [Authorize(Policy = "UserType")]
 
         [HttpPut("UpdateLessonFile/{id}")]
-        public async Task<IActionResult> UpdateLessonFile(int id, IFormFile? newFile, string? newFileName, string? newDescription)
+        public async Task<IActionResult> UpdateLessonFile(int id, [FromForm] IFormFile? newFile, [FromForm] string? newFileName, [FromForm] string? newDescription)
         {
             try
             {
@@ -105,10 +105,22 @@ namespace API.Controllers
                         System.IO.File.Delete(oldFilePath);
                     }
 
-                    var newFilePath = Path.Combine(lessonFolderPath, newFileName);
+                    var newFilePath = Path.Combine(lessonFolderPath, newFileName ?? lessonFile.Title); 
                     using (var stream = new FileStream(newFilePath, FileMode.Create))
                     {
-                        await newFile.CopyToAsync(stream); 
+                        await newFile.CopyToAsync(stream);
+                    }
+
+                    lessonFile.Title = newFileName ?? lessonFile.Title;
+                }
+                else if (!string.IsNullOrEmpty(newFileName) && newFileName != lessonFile.Title)
+                {
+                    var oldFilePath = Path.Combine(lessonFolderPath, lessonFile.Title);
+                    var newFilePath = Path.Combine(lessonFolderPath, newFileName);
+
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Move(oldFilePath, newFilePath);
                     }
 
                     lessonFile.Title = newFileName;
