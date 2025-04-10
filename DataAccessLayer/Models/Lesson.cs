@@ -63,6 +63,7 @@ public partial class Lesson
 
     public virtual ICollection<PackageLesson> PackageLessons { get; set; } = new List<PackageLesson>();
 
+    public ICollection<LessonGroups> LessonGroups { get; set; }
 
     [NotMapped]
     public bool IsBought { get; set; }

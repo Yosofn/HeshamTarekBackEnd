@@ -136,8 +136,16 @@ namespace API
                           .AllowAnyHeader();
                 });
             });
-       
 
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 4294967295; 
+            });
+
+            builder.WebHost.ConfigureKestrel(serverOptions =>
+            {
+                serverOptions.Limits.MaxRequestBodySize = 4294967295; 
+            });
             var app = builder.Build();
             
             app.UseStaticFiles();

@@ -103,6 +103,8 @@ public partial class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Article> Article { get; set; }
     public DbSet<UsersWithLessons> UserBlockedLessons { get; set; }
+    public DbSet<LessonGroups> LessonGroups { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -471,8 +473,14 @@ public partial class AppDbContext : DbContext
             .WithMany(l => l.PackageLessons)
             .HasForeignKey(pl => pl.LessonId)
             .OnDelete(DeleteBehavior.Cascade);
-    
-    OnModelCreatingPartial(modelBuilder);
+
+        modelBuilder.Entity<LessonGroups>()
+           .HasOne(lg => lg.Lesson)
+           .WithMany(l => l.LessonGroups)
+           .HasForeignKey(lg => lg.LessonId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+        OnModelCreatingPartial(modelBuilder);
         modelBuilder.Entity<OTP>()
        .HasOne(o => o.User)
        .WithMany(u => u.OTPs)
