@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace API.Controllers
         {
             _context = context;
         }
+        [Authorize]
 
         [HttpGet("GetLessonGroups")]
         public async Task<IActionResult> GetLessonGroups()
@@ -24,6 +26,8 @@ namespace API.Controllers
             var lessonGroups = await _context.LessonGroups.ToListAsync();
             return Ok(lessonGroups);
         }
+        [Authorize]
+
 
         [HttpGet("GetLessonGroupsByLessonId/{lessonId}")]
         public async Task<IActionResult> GetLessonGroupsByLessonId(int lessonId)
@@ -39,6 +43,7 @@ namespace API.Controllers
 
             return Ok(lessonGroups);
         }
+        [Authorize(Policy = "UserType")]
 
         [HttpPost("AddLessonGroup")]
         public async Task<IActionResult> AddLessonGroup([FromBody] LessonGroupDto lessonGroupDto)
@@ -66,7 +71,7 @@ namespace API.Controllers
             return Ok(lessonGroup);
         }
 
-        // PUT: api/LessonGroups/{id}
+        [Authorize(Policy = "UserType")]
         [HttpPut("EditLessonGroup{id}")]
         public async Task<IActionResult> EditLessonGroup(int id, [FromBody] LessonGroupDto lessonGroupDto)
         {
@@ -92,6 +97,7 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        [Authorize(Policy = "UserType")]
 
         [HttpDelete("DeleteLessonGroup{id}")]
         public async Task<IActionResult> DeleteLessonGroup(int id)

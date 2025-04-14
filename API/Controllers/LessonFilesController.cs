@@ -141,7 +141,6 @@ namespace API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
         [HttpGet("GetFilesByLessonId/{lessonId}")]
         public async Task<IActionResult> GetFilesByLessonId(int lessonId)
         {
@@ -177,6 +176,8 @@ namespace API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
 
         [HttpGet("{lessonName}/{fileName}")]
         public IActionResult GetLessonFile(string fileName,string lessonName)

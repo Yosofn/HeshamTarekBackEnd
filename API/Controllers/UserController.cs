@@ -27,7 +27,6 @@ namespace API.Controllers
         [HttpPost("AdminCreateUser")]
         public async Task<IActionResult> AdminCreateUser([FromBody] AdminCreateUserDto userDto)
         {
-            // التحقق مما إذا كان المستخدم موجود مسبقًا بناءً على رقم الهاتف أو اسم المدرسة
             var checkUser = await _context.Users
                 .FirstOrDefaultAsync(x => x.Phone1 == userDto.Phone1 || x.SchoolName == userDto.SchoolName);
 
@@ -41,7 +40,6 @@ namespace API.Controllers
                 return BadRequest("User already exists");
             }
 
-            // إنشاء كيان مستخدم جديد
             var user = new User
             {
                 Name = userDto.Name,
@@ -57,18 +55,15 @@ namespace API.Controllers
 
             };
 
-            // إضافة المستخدم الجديد إلى قاعدة البيانات
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // إعادة UserId الخاص بالمستخدم الذي تم إنشاؤه
             return Ok(new { UserId = user.Id, Message = "User created successfully" });
         }
         
         [HttpPost("AddLessonsForUsers")]
         public async Task<IActionResult> AddLessonsForUsers(int userId, [FromBody] List<int> lessonIds)
         {
-            // تحقق من صحة userId
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
@@ -78,7 +73,6 @@ namespace API.Controllers
             var existingLessonIds = new List<int>();
             var newLessonIds = new List<int>();
 
-            // تحقق من صحة lessonIds داخل حلقة for
             foreach (var lessonId in lessonIds)
             {
                 var exists = await _context.BlockedLectures.AnyAsync(bl => bl.UserId == userId && bl.LessonId == lessonId);
@@ -92,7 +86,6 @@ namespace API.Controllers
                 }
             }
 
-            // إضافة السجلات الجديدة إلى جدول BlockedLectures
             if (newLessonIds.Any())
             {
                 foreach (var lessonId in newLessonIds)
@@ -260,25 +253,20 @@ namespace API.Controllers
         [HttpGet("GetUsers")]
         public async Task<ActionResult> GetUsers(int pageNumber, int pageSize)
         {
-            // Validate pagination parameters
             if (pageNumber < 1 || pageSize < 1)
             {
                 return BadRequest("Page number and page size must be greater than 0.");
             }
 
-            // Get total count of users
             var totalUsers = await _context.Users.CountAsync();
 
-            // Get paginated users
             var users = await _context.Users
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Calculate total pages
             var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
 
-            // Prepare pagination metadata
             var paginationMetadata = new
             {
                 totalUsers,
@@ -287,7 +275,6 @@ namespace API.Controllers
                 totalPages
             };
 
-            // Return users and pagination metadata
             return Ok(new { users, paginationMetadata });
         }
         [Authorize]
@@ -312,20 +299,17 @@ namespace API.Controllers
                .Include(u => u.OTPs)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
-            // لو المستخدم غير موجود، ارجع false
             if (user == null)
             {
                 return NotFound("This Id is not found");
             }
 
-            // التحقق مما إذا كان الUserId موجودًا كـ TeacherId في جدول Lesson
             bool isTeacher = await _context.Lessons.AnyAsync(l => l.TeacherId == id);
             if (isTeacher)
             {
                 return BadRequest("You can't delete this user because they are a teacher.");
             }
 
-            // حذف البيانات المرتبطة
             _context.AnswerLikes.RemoveRange(user.AnswerLikes);
             _context.BlockedLectures.RemoveRange(user.BlockedLectures);
             _context.Coupons.RemoveRange(user.Coupons);
@@ -342,13 +326,10 @@ namespace API.Controllers
             _context.Results.RemoveRange(user.Results);
             _context.OTPs.RemoveRange(user.OTPs);
 
-            // حذف المستخدم نفسه
             _context.Users.Remove(user);
 
-            // حفظ التغييرات في قاعدة البيانات
             await _context.SaveChangesAsync();
 
-            // Return success response
             return Ok(new { message = "User deleted successfully." });
         }
 
@@ -361,17 +342,14 @@ namespace API.Controllers
         {
             try
             {
-                // جلب المستخدمين الذين لديهم UserType == 1 (المدربين)
                 var instructors = await _context.Users
                     .Where(u => u.UserType == 1)
                     .ToListAsync();
 
-                // إرجاع النتيجة
                 return Ok(instructors);
             }
             catch (Exception ex)
             {
-                // التعامل مع الأخطاء
                 return StatusCode(500, new { message = "An error occurred while fetching instructors", error = ex.Message });
             }
         }
@@ -379,26 +357,21 @@ namespace API.Controllers
         [HttpGet("GetStudents")]
         public async Task<IActionResult> GetStudents(int pageNumber, int pageSize)
         {
-            // Validate pagination parameters
             if (pageNumber < 1 || pageSize < 1)
             {
                 return BadRequest("Page number and page size must be greater than 0.");
             }
 
-            // Get total count of users
             var totalUsers = await _context.Users.Where(u => u.UserType == 0)
                     .CountAsync();
 
-            // Get paginated users
             var users = await _context.Users.Where(u => u.UserType == 0)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Calculate total pages
             var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
 
-            // Prepare pagination metadata
             var paginationMetadata = new
             {
                 totalUsers,
@@ -407,7 +380,6 @@ namespace API.Controllers
                 totalPages
             };
 
-            // Return users and pagination metadata
             return Ok(new { users, paginationMetadata });
         }
 
@@ -415,7 +387,6 @@ namespace API.Controllers
         [HttpGet("GetPaginatedtest")]
         public async Task<IActionResult> GetPaginatedtest(int pageNumber, int pageSize)
         {
-            // Execute the stored procedure directly to get paginated users
             var users = await _context.Users
                 .FromSqlRaw("EXEC GetPaginatedUsersByUserTypeZero @PageNumber = {0}, @PageSize = {1}", pageNumber, pageSize)
                 .Select(u => new
@@ -439,21 +410,17 @@ namespace API.Controllers
                     ExpireDate = u.ExpireDate,
                     Points = u.Points,
                     IMEIDesktop = u.Imeidesktop,
-                    IMEIDesktopOnline = "NULL"  // Make sure this field is included
+                    IMEIDesktopOnline = "NULL"  
                 })
-                .ToListAsync();  // Get the result as a list of anonymous objects
+                .ToListAsync();  
 
-            // Execute a separate SQL query to get the total count of users with UserType = 0
             var totalCount = await _context.Users
            .FromSqlRaw("SELECT COUNT(*) FROM Users WITH (INDEX(IX_Users_UserType_Zero)) WHERE UserType = 0")
-          .CountAsync(); // Use FirstOrDefault to get the single scalar value
+          .CountAsync(); 
 
-            // If the totalCount is null (unlikely, but just to be safe), set it to 0
 
-            // Calculate total pages based on the count and pageSize
             var totalPages = Math.Ceiling((double)totalCount / pageSize);
 
-            // Return paginated users and pagination metadata
             var paginationMetadata = new
             {
                 totalCount,
@@ -471,13 +438,11 @@ namespace API.Controllers
             //if (updateUserDto == null)
             //    return BadRequest("Invalid data.");
 
-            // Retrieve the user from the database
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 return NotFound($"User with ID {id} not found.");
 
-            // Update fields only if provided (optional updates)
             if (!string.IsNullOrEmpty(updateUserDto.Email))
                 user.SchoolName = updateUserDto.Email;
 
@@ -493,7 +458,6 @@ namespace API.Controllers
             if (!string.IsNullOrEmpty(updateUserDto.Address))
                 user.Address = updateUserDto.Address;
 
-            // Save changes to the database
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
@@ -505,13 +469,11 @@ namespace API.Controllers
         [HttpPut("AdminUpdateUser{id}")]
         public async Task<IActionResult> AdminUpdateUser(int id, [FromBody] AdminUpdateUserDto updateUserDto)
         {
-            // Retrieve the user from the database
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 return NotFound($"User with ID {id} not found.");
 
-            // Update fields only if provided (optional updates)
             if (!string.IsNullOrEmpty(updateUserDto.Email))
                 user.SchoolName = updateUserDto.Email;
 
@@ -533,7 +495,6 @@ namespace API.Controllers
             if (updateUserDto.ImeiDesktop == "0")
                 user.Imeidesktop = null;
 
-            // Save changes to the database
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
@@ -560,37 +521,31 @@ namespace API.Controllers
                 return BadRequest("Please upload a valid image file.");
             }
 
-            // تحديد مسار التخزين
             var userImagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserImages");
             if (!Directory.Exists(userImagesPath))
             {
                 Directory.CreateDirectory(userImagesPath);
             }
 
-            // التحقق من وجود المستخدم
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
-            // استخراج اسم الملف وإضافة امتداد الملف
-            var fileExtension = Path.GetExtension(profilePicture.FileName); // استخراج امتداد الملف
-            var fileName = $"{userId}{fileExtension}"; // تسمية الملف بـ userId لضمان عدم تكرار الأسماء
+            var fileExtension = Path.GetExtension(profilePicture.FileName); 
+            var fileName = $"{userId}{fileExtension}"; 
             var filePath = Path.Combine(userImagesPath, fileName);
 
-            // حفظ الصورة في المجلد المحدد
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await profilePicture.CopyToAsync(fileStream);
             }
 
-            // تحديث مسار الصورة في قاعدة البيانات
-            user.FilePath = $"/UserImages/{fileName}"; // تخزين المسار الذي يعرض الصورة في قاعدة البيانات
+            user.FilePath = $"/UserImages/{fileName}";
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            // إعادة المسار الذي يحتوي على الصورة
             return Ok(new { Message = "Profile picture uploaded successfully.", ImagePath = user.FilePath });
         }
 
@@ -600,9 +555,6 @@ namespace API.Controllers
         {
             public IFormFile? FileName { get; set; }
         }
-
-
-
 
 
 

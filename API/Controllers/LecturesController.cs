@@ -46,7 +46,6 @@ namespace API.Controllers
                     }
                 }
 
-                // Define pagination parameters
                 var paginatedLectures = await queryable
                     .OrderBy(l=>l.Priority)
                     .Skip((pageNumber - 1) * pageSize)
@@ -54,10 +53,8 @@ namespace API.Controllers
                     .ToListAsync();
 
                 var totalLectures = await queryable.CountAsync();
-                // Calculate total pages
                 var totalPages = (int)Math.Ceiling(totalLectures / (double)pageSize);
 
-                // Prepare pagination metadata
                 var paginationMetadata = new
                 {
                     totalLectures,
@@ -66,7 +63,6 @@ namespace API.Controllers
                     totalPages
                 };
 
-                // Return the lectures and pagination metadata
                 return Ok(new { paginatedLectures, paginationMetadata });
             }
             catch (Exception ex)
