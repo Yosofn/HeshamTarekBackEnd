@@ -104,15 +104,16 @@ public partial class AppDbContext : DbContext
     public DbSet<Article> Article { get; set; }
     public DbSet<UsersWithLessons> UserBlockedLessons { get; set; }
     public DbSet<LessonGroups> LessonGroups { get; set; }
-
+    public DbSet<Feedback> Feedbacks { get; set; } 
+    public DbSet<Response> Responses { get; set; } 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
         modelBuilder.Entity<OTP>()
          .HasOne(o => o.User)
-         .WithMany(u => u.OTPs) // Assuming User has multiple OTPs
+         .WithMany(u => u.OTPs) 
          .HasForeignKey(o => o.UserId)
-         .OnDelete(DeleteBehavior.Cascade); // حذف OTPs عند حذف المستخدم
+         .OnDelete(DeleteBehavior.Cascade); 
         modelBuilder.Entity<Publish>().HasNoKey();
 
         modelBuilder.Entity<LessonDetails>()
@@ -479,6 +480,22 @@ public partial class AppDbContext : DbContext
            .WithMany(l => l.LessonGroups)
            .HasForeignKey(lg => lg.LessonId)
            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Feedback>()
+            .HasOne(f => f.User)
+            .WithMany(u => u.Feedbacks)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Response>()
+          .HasKey(r => r.ResponseId);
+
+        modelBuilder.Entity<Response>()
+            .HasOne(r => r.Feedback)
+            .WithMany(f => f.Responses)
+            .HasForeignKey(r => r.FeedbackId)
+            .OnDelete(DeleteBehavior.Cascade); 
+
 
         OnModelCreatingPartial(modelBuilder);
         modelBuilder.Entity<OTP>()

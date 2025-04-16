@@ -297,6 +297,7 @@ namespace API.Controllers
                 .Include(u => u.QuestionAnswers)
                 .Include(u => u.Results)
                .Include(u => u.OTPs)
+               .Include(u=>u.Feedbacks)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
@@ -325,6 +326,7 @@ namespace API.Controllers
             _context.QuestionAnswers.RemoveRange(user.QuestionAnswers);
             _context.Results.RemoveRange(user.Results);
             _context.OTPs.RemoveRange(user.OTPs);
+            _context.Feedbacks.RemoveRange(user.Feedbacks);
 
             _context.Users.Remove(user);
 

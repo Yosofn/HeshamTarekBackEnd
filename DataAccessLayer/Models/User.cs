@@ -112,6 +112,9 @@ public partial class User
 
     [InverseProperty("User")]
     public virtual ICollection<Material> Materials { get; set; } = new List<Material>();
+    public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
+
     public ICollection<OTP> OTPs { get; set; } = new List<OTP>();
 
 

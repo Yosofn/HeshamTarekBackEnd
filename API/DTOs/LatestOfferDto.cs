@@ -10,18 +10,13 @@ namespace DataAccessLayer.DTOs
     public class LatestOfferDto
     {
         [StringLength(255)]
-        public string? OfferDescription { get; set; }
+        public string OfferDescription { get; set; }
 
-        [Required]
-        [StringLength(255)]
-        public string? OfferTitle { get; set; }
 
         [StringLength(2083)]
         public string? OfferUrl { get; set; }
 
-        public string? FilePath
-        {
-            get; set;
-        }
+        public IFormFile? Image { get; set; }
+
     }
 }

@@ -50,7 +50,6 @@ namespace API.Controllers
                 return Ok(freeVideos);
             }
             }
-        // POST: api/FreeVideos
 
         [Authorize(Policy = "UserType")]
         [HttpPost("AddFreeVideo")]

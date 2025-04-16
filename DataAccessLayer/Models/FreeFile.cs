@@ -20,7 +20,6 @@ namespace DataAccessLayer.Models
 
         [MaxLength(2083)]
         public string? Url { get; set; }
-
         public byte[]? freefile { get; set; }
 
     }

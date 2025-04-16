@@ -13,7 +13,6 @@ public partial class LatestOffer
     [Key]
     public int OfferId { get; set; }
 
-    [Required]
     [StringLength(255)]
     public string Title { get; set; }
 
