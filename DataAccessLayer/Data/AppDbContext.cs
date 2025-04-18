@@ -481,21 +481,24 @@ public partial class AppDbContext : DbContext
            .HasForeignKey(lg => lg.LessonId)
            .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Feedback>()
-            .HasOne(f => f.User)
-            .WithMany(u => u.Feedbacks)
-            .HasForeignKey(f => f.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Response>()
+         .HasOne(r => r.Feedback)
+         .WithMany(f => 
+         f.Responses)
+         .HasForeignKey(r => r.FeedbackId)
+         .OnDelete(DeleteBehavior.Cascade); 
 
         modelBuilder.Entity<Response>()
-          .HasKey(r => r.ResponseId);
+            .HasOne(r => r.User)
+            .WithMany(u => u.Responses)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Response>()
-            .HasOne(r => r.Feedback)
-            .WithMany(f => f.Responses)
-            .HasForeignKey(r => r.FeedbackId)
-            .OnDelete(DeleteBehavior.Cascade); 
-
+            .HasOne(r => r.User)
+            .WithMany(u => u.Responses)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         OnModelCreatingPartial(modelBuilder);
         modelBuilder.Entity<OTP>()

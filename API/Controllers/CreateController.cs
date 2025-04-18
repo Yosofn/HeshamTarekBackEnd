@@ -196,7 +196,6 @@ namespace API.Controllers
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] createUserDto userDto)
         {
-            // Check if the user already exists based on phone or username
             var checkUser = await _context.Users
                 .FirstOrDefaultAsync(x => x.Phone1 == userDto.Phone1 || x.SchoolName == userDto.SchoolName);
 
@@ -207,7 +206,6 @@ namespace API.Controllers
 
             if (checkUser == null)
             {
-                // Create a new user entity
                 var user = new User
                 {
                     Username = userDto.Username, 
@@ -235,11 +233,9 @@ namespace API.Controllers
                     FilePath = userDto.FilePath
                 };
 
-                // Add the new user to the database
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                // Return the created user's Id
                 return Ok(new { UserId = user.Id,userDto,Message = "User created successfully" });
             }
 
@@ -272,7 +268,6 @@ namespace API.Controllers
         [HttpPost("CheckDTO")]
         public async Task<IActionResult> CheckDTO([FromBody] VerifyOtpDto verifyDto)
         {
-            // تحقق من كود OTP في قاعدة البيانات
             var otp = await _context.OTPs
                 .FirstOrDefaultAsync(o => o.OTPCode == verifyDto.OTPCode && o.ExpiryTime > DateTime.Now);
 
@@ -286,13 +281,11 @@ namespace API.Controllers
                 return NotFound("User not found");
             }
 
-            // تحديث البريد الإلكتروني فقط
             user.SchoolName = verifyDto.Email;
 
             await _context.SaveChangesAsync();
 
 
-            // تحديث السجل في جدول OTP لربطه بالمستخدم الجديد
             otp.IsUsed = true;
             _context.OTPs.Update(otp);
             await _context.SaveChangesAsync();
